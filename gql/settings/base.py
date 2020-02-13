@@ -123,3 +123,7 @@ MEDIA_URL = '/uploads/'
 FILE_UPLOAD_PERMISSIONS = 0o644
 
 AUTH_USER_MODEL = 'common.User'
+
+GRAPHENE = {
+    'SCHEMA': 'gql.schema.schema'
+}
