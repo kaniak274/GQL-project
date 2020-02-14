@@ -125,5 +125,13 @@ FILE_UPLOAD_PERMISSIONS = 0o644
 AUTH_USER_MODEL = 'common.User'
 
 GRAPHENE = {
-    'SCHEMA': 'gql.schema.schema'
+    'SCHEMA': 'gql.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
 }
+
+AUTHENTICATION_BACKENDS = [
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]

@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
@@ -29,19 +30,19 @@ class Query(object):
 
     def resolve_notes(self, info, **kwargs):
         if not info.context.user.is_authenticated:
-            return None
+            raise PermissionDenied()
         else:
             return Note.objects.select_related('user').filter(user=info.context.user)
 
     def resolve_users(self, info, **kwargs):
         if not info.context.user.is_authenticated:
-            return None
+            raise PermissionDenied()
 
         return get_user_model().objects.all()
 
     def resolve_note(self, info, **kwargs):
         if not info.context.user.is_authenticated:
-            return None
+            raise PermissionDenied()
 
         id = kwargs.get('id')
 
