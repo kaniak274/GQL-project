@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 import graphene
@@ -27,18 +28,32 @@ class Query(object):
     note = graphene.Field(NoteType, id=graphene.Int())
 
     def resolve_notes(self, info, **kwargs):
-        return Note.objects.select_related('user').all()
+        if not info.context.user.is_authenticated:
+            return None
+        else:
+            return Note.objects.select_related('user').filter(user=info.context.user)
 
     def resolve_users(self, info, **kwargs):
+        if not info.context.user.is_authenticated:
+            return None
+
         return get_user_model().objects.all()
 
     def resolve_note(self, info, **kwargs):
+        if not info.context.user.is_authenticated:
+            return None
+
         id = kwargs.get('id')
 
-        if id:
-            return get_object_or_404(Note, id=id)
+        if not id:
+            return None
 
-        return None
+        note = get_object_or_404(Note, id=id)
+
+        if note.user != info.context.user:
+            raise Http404
+
+        return note
 
 
 class NoteMutation(DjangoModelFormMutation):
