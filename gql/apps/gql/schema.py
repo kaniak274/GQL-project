@@ -3,8 +3,10 @@ from django.shortcuts import get_object_or_404
 
 import graphene
 
+from graphene_django.forms.mutation import DjangoModelFormMutation
 from graphene_django.types import DjangoObjectType
 
+from .forms import NoteForm
 from .models import Note
 
 
@@ -37,3 +39,14 @@ class Query(object):
             return get_object_or_404(Note, id=id)
 
         return None
+
+
+class NoteMutation(DjangoModelFormMutation):
+    note = graphene.Field(NoteType)
+
+    class Meta:
+        form_class = NoteForm
+
+
+class Mutation(object):
+    add_note = NoteMutation.Field()
