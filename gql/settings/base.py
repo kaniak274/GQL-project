@@ -28,6 +28,7 @@ INSTALLED_APPS = [
 
     'django_extensions',
     'graphene_django',
+    'social_django',
 
     'gql.apps.common',
     'gql.apps.gql',
@@ -97,7 +98,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -128,3 +128,12 @@ GRAPHENE = {
     'SCHEMA': 'gql.schema.schema',
 }
 
+from .auth0 import *
+
+AUTHENTICATION_BACKENDS = {
+    'gql.apps.gql.auth0backend.Auth0',
+    'django.contrib.auth.backends.ModelBackend'
+}
+
+LOGIN_URL = '/login/auth0'
+LOGIN_REDIRECT_URL = '/dashboard'
